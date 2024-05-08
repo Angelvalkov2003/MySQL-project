@@ -1,0 +1,229 @@
+create database SkiResort;
+use SkiResort;
+
+CREATE TABLE Customers (
+  customer_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  gender ENUM("Male", "Female", "Other") NOT NULL,
+  birth_year YEAR NOT NULL
+);
+
+CREATE TABLE Employees (
+  employee_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  gender ENUM("Male", "Female", "Other") NOT NULL,
+  birth_year YEAR NOT NULL,
+  position ENUM("Ski Instructor", "Lift Operator", "Receptionist", "Snowmaker", "Security", "Hygienist", "Manager", "Other") NOT NULL
+);
+
+CREATE TABLE Cards (
+  card_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  customer_id INT,
+  employee_id INT,
+  type ENUM("Child", "Student", "Normal") NOT NULL,
+  price DECIMAL(5,2) NOT NULL,
+  dayphase ENUM("Morning", "Afternoon", "Evening", "UnLimit") NOT NULL,
+  start_day DATE NOT NULL,
+  end_day DATE NOT NULL,
+  CONSTRAINT FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
+  CONSTRAINT FOREIGN KEY (employee_id) REFERENCES Employees(employee_id),
+  CONSTRAINT only_one_card_owner CHECK (
+        (customer_id IS NULL AND employee_id IS NOT NULL) OR
+        (employee_id IS NULL AND customer_id IS NOT NULL)
+    )
+);
+
+CREATE TABLE Salaries (
+  salary_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  amount DECIMAL(10,2) NOT NULL,
+  year YEAR NOT NULL,
+  month TINYINT NOT NULL CHECK (month >= 1 AND month <= 12),
+  employee_id INT NOT NULL,
+  CONSTRAINT FOREIGN KEY (employee_id) REFERENCES Employees(employee_id),
+  UNIQUE(year, month, employee_id)
+);
+
+CREATE TABLE Lifts (
+  lift_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  number INT NOT NULL,
+  status ENUM("Open", "Closed", "Ruined", "Under construction") NOT NULL,
+  length INT NOT NULL,
+  capacity INT NOT NULL,
+  type ENUM("Chairlift","Gondola","Drag") NOT NULL,
+  price DECIMAL(10,2) NOT NULL
+);
+
+CREATE TABLE Slopes (
+  slope_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  length INT NOT NULL,
+  depth INT NOT NULL,
+  difficulty ENUM("Easy", "Medium", "Hard", "Professional") NOT NULL,
+  elevation INT NOT NULL
+);
+
+CREATE TABLE Lift_Cards (
+  customer_id INT NOT NULL,
+  lift_id INT NOT NULL,
+  CONSTRAINT FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
+  CONSTRAINT FOREIGN KEY (lift_id) REFERENCES Lifts(lift_id),
+  PRIMARY KEY(customer_id, lift_id)
+);
+
+CREATE TABLE Slope_Lift (
+  slope_id INT NOT NULL,
+  lift_id INT NOT NULL,
+  CONSTRAINT FOREIGN KEY (slope_id) REFERENCES Slopes(slope_id),
+  CONSTRAINT FOREIGN KEY (lift_id) REFERENCES Lifts(lift_id),
+  PRIMARY KEY(slope_id, lift_id)
+);
+
+CREATE TABLE Employee_Lift (
+  employee_id INT NOT NULL,
+  lift_id INT NOT NULL,
+  CONSTRAINT FOREIGN KEY (employee_id) REFERENCES Employees(employee_id),
+  CONSTRAINT FOREIGN KEY (lift_id) REFERENCES Lifts(lift_id),
+  PRIMARY KEY(employee_id, lift_id)
+);
+
+
+Alter Table Employees
+ADD column reportTo INT after name;
+
+Alter Table Employees
+ADD CONSTRAINT FOREIGN KEY (reportTo) REFERENCES Employees(employee_id);
+
+
+UPDATE Employees
+set reportTo = 7
+Where employee_id in (2,3,5,6,10);
+
+
+
+Select * from cards;
+Select * from customers;
+Select * from employee_lift;
+Select * from employees;
+Select * from lift_cards;
+Select * from lifts;
+Select * from salaries;
+Select * from slope_lift;
+Select * from slopes;
+
+
+/* Q2 Select with Where -> shows all males employee that has a card */
+Select e.name as name, e.gender as gender, e.position as position, c.price, c.end_day
+From Cards as c
+Join Employees as e ON c.employee_id = e.employee_id
+Where e.gender = "Male";
+
+
+/* 7 Select the sum of salaries in each month and year */
+Select SUM(s.amount), s.month, s.year
+FROM Salaries as s
+JOIN Employees as e ON e.employee_id = s.employee_id
+group by month, year
+Limit 15;
+
+/* Select all employees and there cards if they have */
+Select e.name as name, e.gender as gender, e.position as position, c.price, c.end_day
+From Cards as c
+RIGHT OUTER Join Employees as e ON c.employee_id = e.employee_id;
+
+
+/* All lifts that have employees with position "Other" */
+
+Select l.name, l.number, l.status , l.length
+From Lifts as l
+Where l.lift_id in (Select EL.lift_id 
+					FROM Employee_lift as EL
+                    Join Employees as e ON EL.employee_id = e.employee_id
+                    Where e.position = "Other");
+
+/* Q Triggers = Trigger that calculate taxes for each salary 
+if under 2000 with 10% if more that 2000 with 20%*/
+
+Alter Table Salaries
+ADD column taxes DECIMAL(10,2) after amount;
+DELIMITER //
+CREATE TRIGGER calculate_taxes_update
+Before UPDATE ON Salaries
+FOR EACH ROW
+BEGIN
+    DECLARE tax_rate DECIMAL(5,2);
+    
+    IF NEW.amount != OLD.amount THEN
+        IF NEW.amount <= 2000 THEN
+            SET tax_rate = 0.10;
+        ELSE
+            SET tax_rate = 0.20;
+        END IF;
+        SET NEW.taxes = NEW.amount * tax_rate;
+    END IF;
+END;
+//
+DELIMITER ;
+
+
+Update Salaries
+SET amount = 2000
+Where salary_id in (1,2,3,4);
+
+Update Salaries
+SET amount = 2900
+Where salary_id in (14);
+
+Select * from salaries;
+
+
+/* Cursors q - makes temporary table with all slopes that have difficulty of hard*/
+DROP PROCEDURE IF EXISTS HardSlopes;
+DELIMITER |
+CREATE PROCEDURE HardSlopes()
+BEGIN
+    DECLARE finished INT DEFAULT 0;
+    DECLARE tempName VARCHAR(255);
+    DECLARE tempElevation INT;
+    DECLARE tempDepth INT;
+    DECLARE tempLength INT;
+
+    DECLARE slopeCursor CURSOR FOR
+        SELECT name, elevation, depth, length
+        FROM Slopes
+        WHERE difficulty = 'Hard';
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    CREATE TEMPORARY TABLE tempSlopes (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        tempName VARCHAR(255),
+        tempElevation INT,
+        tempDepth INT,
+        tempLength INT
+    ) ENGINE = Memory;
+
+    OPEN slopeCursor;
+
+    slope_loop: WHILE finished = 0 DO
+        FETCH slopeCursor INTO tempName, tempElevation, tempDepth, tempLength;
+        
+        IF finished = 1 THEN
+            LEAVE slope_loop;
+        END IF;
+
+        INSERT INTO tempSlopes(tempName, tempElevation, tempDepth, tempLength) 
+        VALUES (tempName, tempElevation, tempDepth, tempLength);
+    END WHILE;
+
+    CLOSE slopeCursor;
+
+    SELECT * FROM tempSlopes;
+
+    DROP TABLE tempSlopes;
+
+    SELECT 'Finished!';
+END |
+DELIMITER ;
+
+CALL HardSlopes;

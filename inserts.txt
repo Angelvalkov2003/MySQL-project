@@ -1,0 +1,226 @@
+INSERT INTO Customers (name, gender, birth_year) VALUES
+('John Doe', 'Male', 1990),
+('Jane Smith', 'Female', 1985),
+('Alex Johnson', 'Other', 1995);
+
+INSERT INTO Employees (name, gender, birth_year, position) VALUES
+('Michael Brown', 'Male', 1980, 'Ski Instructor'),
+('Emily Davis', 'Female', 1992, 'Lift Operator'),
+('Chris Lee', 'Other', 1988, 'Receptionist');
+
+INSERT INTO Cards (customer_id, type, price, dayphase, start_day, end_day) VALUES
+(1, 'Child', 25.00, 'Morning', '2024-01-01', '2024-01-01'),
+(2, 'Student', 35.00, 'Afternoon', '2024-01-02', '2024-01-02'),
+(3, 'Normal', 45.00, 'UnLimit', '2024-01-03', '2024-01-05');
+
+INSERT INTO Cards (employee_id, type, price, dayphase, start_day, end_day) VALUES
+(3, 'Normal', 35.00, 'UnLimit', '2024-01-03', '2024-01-05');
+
+INSERT INTO Salaries (amount, year, month, employee_id) VALUES
+(3000.00, 2024, 1, 1),
+(2500.00, 2024, 1, 2),
+(2800.00, 2024, 1, 3);
+
+INSERT INTO Lifts (name, number, status, length, capacity, type, price) VALUES
+('Mountain Lift', 1, 'Open', 1000, 4, 'Chairlift', 10.00),
+('Valley Lift', 2, 'Closed', 800, 6, 'Gondola', 15.00),
+('Slope Lift', 3, 'Open', 1200, 2, 'Drag', 5.00);
+
+INSERT INTO Slopes (name, length, depth, difficulty, elevation) VALUES
+('Beginner Slope', 1500, 50, 'Easy', 200),
+('Intermediate Slope', 2000, 80, 'Medium', 400),
+('Advanced Slope', 2500, 100, 'Hard', 600);
+
+INSERT INTO Lift_Cards (customer_id, lift_id) VALUES
+(1, 1),
+(2, 2),
+(3, 3);
+
+INSERT INTO Slope_Lift (slope_id, lift_id) VALUES
+(1, 1),
+(2, 2),
+(3, 3);
+
+INSERT INTO Employee_Lift (employee_id, lift_id) VALUES
+(1, 1),
+(2, 2),
+(3, 3);
+
+
+
+
+
+
+
+INSERT INTO Customers (name, gender, birth_year) VALUES
+('Sarah Johnson', 'Female', 1993),
+('David Wilson', 'Male', 1987),
+('Taylor Brown', 'Other', 2000),
+('Emma White', 'Female', 1998),
+('Ryan Martinez', 'Male', 1995);
+
+INSERT INTO Employees (name, gender, birth_year, position) VALUES
+('Olivia Moore', 'Female', 1990, 'Snowmaker'),
+('Noah Taylor', 'Male', 1985, 'Security'),
+('Ava Anderson', 'Female', 1997, 'Hygienist'),
+('Ethan Clark', 'Male', 1989, 'Manager');
+
+INSERT INTO Cards (customer_id, type, price, dayphase, start_day, end_day) VALUES
+(4, 'Student', 30.00, 'Afternoon', '2024-01-03', '2024-01-03'),
+(5, 'Normal', 40.00, 'UnLimit', '2024-01-02', '2024-01-04'),
+(6, 'Child', 20.00, 'Morning', '2024-01-01', '2024-01-01'),
+(7, 'Normal', 45.00, 'UnLimit', '2024-01-02', '2024-01-05'),
+(8, 'Student', 35.00, 'Afternoon', '2024-01-03', '2024-01-03');
+
+INSERT INTO Salaries (amount, year, month, employee_id) VALUES
+(2800.00, 2023, 2, 4),
+(2700.00, 2023, 3, 5),
+(2600.00, 2024, 1, 6),
+(2900.00, 2024, 2, 6),
+(3000.00, 2024, 3, 2);
+
+INSERT INTO Lifts (name, number, status, length, capacity, type, price) VALUES
+('Peak Lift', 4, 'Open', 1500, 4, 'Chairlift', 12.00),
+('Summit Lift', 5, 'Closed', 1000, 6, 'Gondola', 18.00),
+('Valley Lift 2', 6, 'Open', 1200, 3, 'Drag', 6.00);
+
+INSERT INTO Slopes (name, length, depth, difficulty, elevation) VALUES
+('Expert Slope', 3000, 120, 'Professional', 800),
+('Beginner Slope 2', 1800, 60, 'Easy', 250),
+('Advanced Slope 2', 2200, 90, 'Hard', 550);
+
+INSERT INTO Lift_Cards (customer_id, lift_id) VALUES
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 4),
+(8, 6);
+
+INSERT INTO Slope_Lift (slope_id, lift_id) VALUES
+(4, 4),
+(5, 5),
+(6, 6);
+
+INSERT INTO Employee_Lift (employee_id, lift_id) VALUES
+(4, 4),
+(5, 5),
+(6, 6),
+(3, 4),
+(5, 3);
+
+-- bad insert Card is owned by employee and customer
+INSERT INTO Cards (customer_id, employee_id, type, price, dayphase, start_day, end_day) VALUES
+(4, 3, 'Student', 30.00, 'Afternoon', '2024-01-03', '2024-01-03');
+
+
+
+-- More customers
+INSERT INTO Customers (name, gender, birth_year) VALUES
+('Sophia Williams', 'Female', 1991),
+('Matthew Taylor', 'Male', 1986),
+('Chloe Brown', 'Female', 1994),
+('Daniel Anderson', 'Male', 1997),
+('Grace Wilson', 'Female', 1990);
+
+-- More employees
+INSERT INTO Employees (name, gender, birth_year, position) VALUES
+('Liam Jones', 'Male', 1983, 'Snowmaker'),
+('Charlotte Martinez', 'Female', 1995, 'Security'),
+('Mason Miller', 'Male', 1989, 'Hygienist'),
+('Amelia Thompson', 'Female', 1987, 'Manager');
+
+-- More cards for customers
+INSERT INTO Cards (customer_id, type, price, dayphase, start_day, end_day) VALUES
+(9, 'Normal', 40.00, 'UnLimit', '2024-01-03', '2024-01-05'),
+(10, 'Student', 35.00, 'Afternoon', '2024-01-04', '2024-01-04'),
+(11, 'Child', 20.00, 'Morning', '2024-01-05', '2024-01-05'),
+(12, 'Normal', 45.00, 'UnLimit', '2024-01-06', '2024-01-08'),
+(13, 'Student', 30.00, 'Afternoon', '2024-01-07', '2024-01-07');
+
+-- More cards for employees
+INSERT INTO Cards (employee_id, type, price, dayphase, start_day, end_day) VALUES
+(8, 'Normal', 35.00, 'UnLimit', '2024-01-03', '2024-01-05'),
+(9, 'Normal', 45.00, 'UnLimit', '2024-01-04', '2024-01-06'),
+(10, 'Normal', 40.00, 'UnLimit', '2024-01-05', '2024-01-07');
+
+-- More salaries
+INSERT INTO Salaries (amount, year, month, employee_id) VALUES
+(2800.00, 2024, 2, 8),
+(2900.00, 2024, 2, 9),
+(3000.00, 2024, 2, 10),
+(3100.00, 2024, 2, 3),
+(3200.00, 2024, 2, 4);
+
+-- More lifts
+INSERT INTO Lifts (name, number, status, length, capacity, type, price) VALUES
+('Ridge Lift', 7, 'Open', 1300, 5, 'Chairlift', 14.00),
+('Sunset Lift', 8, 'Closed', 900, 6, 'Gondola', 20.00),
+('Meadow Lift', 9, 'Open', 1100, 4, 'Drag', 8.00);
+
+-- More slopes
+INSERT INTO Slopes (name, length, depth, difficulty, elevation) VALUES
+('Pro Slope', 2800, 100, 'Professional', 900),
+('Intermediate Slope 2', 1900, 70, 'Medium', 350),
+('Hardcore Slope', 2400, 110, 'Hard', 600);
+
+-- More associations
+INSERT INTO Lift_Cards (customer_id, lift_id) VALUES
+(9, 7),
+(10, 8),
+(11, 9),
+(12, 7),
+(13, 9);
+
+INSERT INTO Slope_Lift (slope_id, lift_id) VALUES
+(7, 7),
+(8, 8),
+(9, 9);
+
+INSERT INTO Employee_Lift (employee_id, lift_id) VALUES
+(8, 7),
+(9, 8),
+(10, 9),
+(4, 8),
+(3, 7);
+
+
+-- More customers
+INSERT INTO Customers (name, gender, birth_year) VALUES
+('Lily Johnson', 'Female', 1992),
+('Benjamin Garcia', 'Male', 1988),
+('Avery Davis', 'Female', 1996),
+('Samuel Rodriguez', 'Male', 1993),
+('Harper Martinez', 'Female', 1989);
+
+-- More cards for customers
+INSERT INTO Cards (customer_id, type, price, dayphase, start_day, end_day) VALUES
+(14, 'Normal', 40.00, 'UnLimit', '2024-01-03', '2024-01-05'),
+(15, 'Student', 35.00, 'Afternoon', '2024-01-04', '2024-01-04'),
+(16, 'Child', 20.00, 'Morning', '2024-01-05', '2024-01-05'),
+(17, 'Normal', 45.00, 'UnLimit', '2024-01-06', '2024-01-08'),
+(18, 'Student', 30.00, 'Afternoon', '2024-01-07', '2024-01-07');
+
+-- More customers
+INSERT INTO Customers (name, gender, birth_year) VALUES
+('Evelyn Lopez', 'Female', 1990),
+('William Lee', 'Male', 1985),
+('Ella Hill', 'Female', 1998),
+('Alexander Clark', 'Male', 1991),
+('Scarlett Lewis', 'Female', 1994);
+
+-- More cards for customers
+INSERT INTO Cards (customer_id, type, price, dayphase, start_day, end_day) VALUES
+(19, 'Normal', 40.00, 'UnLimit', '2024-01-03', '2024-01-05'),
+(20, 'Student', 35.00, 'Afternoon', '2024-01-04', '2024-01-04'),
+(21, 'Child', 20.00, 'Morning', '2024-01-05', '2024-01-05'),
+(22, 'Normal', 45.00, 'UnLimit', '2024-01-06', '2024-01-08'),
+(23, 'Student', 30.00, 'Afternoon', '2024-01-07', '2024-01-07');
+
+INSERT INTO Employees (name, gender, birth_year, position) VALUES
+('Petar Ivanov', 'Male', 2003, 'Other'),
+('Angel Valkov', 'Male', 1985, 'Other');
+
+INSERT INTO Employee_Lift (employee_id, lift_id) VALUES
+(12, 7),
+(13, 8);
+
